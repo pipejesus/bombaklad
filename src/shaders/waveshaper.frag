@@ -3,6 +3,8 @@
 varying vec2 fragTexCoord;
 varying vec4 fragColor;
 uniform float seed;
+uniform float waveHeight;
+uniform float waveYStart;
 
 float rand(float n){return fract(sin(n) * 43758.5453123);}
 
@@ -14,11 +16,11 @@ float noise(float p){
 }
 
 float calcDarkness(float y, float h) {
-    if ( y > (290.0f) ) {
-        return 1.0f;
-    } else {
-        return (y / h) * max(0.8f, sin(seed)*sin(seed)); // * (y / h);// * (y / h);
-    }
+//    if ( y >= (waveYStart) ) {
+//        return 1.0f;
+//    } else {
+        return ( (y) / h) * max(0.8f, sin(seed)*sin(seed)); // * (y / h);// * (y / h);
+//    }
 }
 
 vec4 calcFinalColor(vec4 color, float darkness) {
@@ -35,15 +37,13 @@ vec4 randomColor() {
 
 void main()
 {
-    float darkness = calcDarkness(gl_FragCoord.y - 0.5f, 250.0f);
+    float darkness = calcDarkness(gl_FragCoord.y - 0.5f, waveHeight);
     float opacity = 1.0f;
     //    vec4 pixel = texture2D(texture, gl_TexCoord[0].xy);
     //    float opacity =  ( 1.0f/ (270.0f /gl_FragCoord.y));
     //    float red = 1.0f - ( 1.0f/ (290.0f /gl_FragCoord.y));
     //    float opacity2 = 1.0f;
     vec4 p = vec4(gl_Color.xyz, opacity);
-
     vec4 final_color = calcFinalColor(p, darkness);
     gl_FragColor = final_color;
-//    gl_FragColor = randomColor();
 }
