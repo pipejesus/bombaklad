@@ -5,11 +5,6 @@ attribute vec2 vertexTexCoord;
 
 void main()
 {
-
-
-//  vec4 z = vec4(1.0f,1.0f - 1.0f / 290.0f / gl_Vertex.y,1.0f,1.0f);
-//  gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex * z
-
     gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
 
     // transform the texture coordinates
