@@ -98,11 +98,11 @@ int main()
         35.0f,
         pal_sea1["sea500"],
         0.0f,
+        sun_angle,
         shader
     };
 
     wave1.setPosition(0.0f, 480.0f - 140.0f);
-//    wave1.setPosition(0.0f, 0.0f);
 
     Wave wave2{
             8,
@@ -110,6 +110,7 @@ int main()
             65.0f,
             pal_sea1["sea500"],
             -1 * M_PI / 3,
+            sun_angle,
             shader2
     };
 
@@ -121,10 +122,15 @@ int main()
             20.0f,
             pal_sea1["sea500"],
             -1 * M_PI / 4,
+            sun_angle,
             shader3
     };
 
     wave3.setPosition(0.0f, 480.0f - 330.0f);
+
+    wave1.SetSunAngle(sun_angle);
+    wave2.SetSunAngle(sun_angle);
+    wave3.SetSunAngle(sun_angle);
 
     setupPlayer();
 
@@ -167,13 +173,15 @@ int main()
             }
         }
 
-        wave1.Update();
-        wave2.Update();
-        wave3.Update();
-        updatePlayer(wave1, dt, elapsed);
+        wave1.SetSunAngle(sun_angle);
+        wave2.SetSunAngle(sun_angle);
+        wave3.SetSunAngle(sun_angle);
 
-        sun_angle += M_PI / 270.0f;
-        sunshader.setUniform("seed", sun_angle);
+        wave1.Update(dt, elapsed);
+        wave2.Update(dt, elapsed);
+        wave3.Update(dt, elapsed);
+
+        updatePlayer(wave2, dt, elapsed);
 
         window.clear(sf::Color{255, 255, 255, 100});
 
@@ -182,6 +190,9 @@ int main()
         window.draw(wave2, &shader2);
         window.draw(wave1, &shader);
         window.draw(player.shape);
+
+        sun_angle -= M_PI / 270.0f;
+        sunshader.setUniform("seed", sun_angle);
 
         window.display();
     }

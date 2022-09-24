@@ -13,12 +13,13 @@ float noise(float p){
     return mix(rand(fl), rand(fl + 1.0), fc);
 }
 
-float map(float value, float min1, float max1, float min2, float max2) {
+float map(float value, float min1, float max1, float min2, float max2)
+{
     return min2 + (value - min1) * (max2 - min2) / (max1 - min1);
 }
 
-vec4 calcFinalColor(vec4 color) {
-
+vec4 calcFinalColor(vec4 color)
+{
     float rot_radius = 150.0f;
 
     vec4 sun_pos = vec4(
@@ -30,18 +31,15 @@ vec4 calcFinalColor(vec4 color) {
 
     vec4 frag_dist_from_sun = sun_pos - gl_FragCoord;
     float dist = sqrt(pow(frag_dist_from_sun.x,2) + pow(frag_dist_from_sun.y,2));
-    float brightness = max(0.37f, dist / rot_radius);
 
+    float brightness = max(0.37f, dist / rot_radius);
     vec4 white = vec4(brightness, brightness, brightness, 1.0f);
+
     if (dist < rot_radius) {
         return color * brightness;
     }
 
     return color;
-
-//    if ( floor(gl_FragCoord.x) == floor(sun_pos.x) && floor(gl_FragCoord.y) == floor(sun_pos.y) ) {
-
-//    }
 }
 
 void main()

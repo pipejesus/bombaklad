@@ -20,7 +20,7 @@ class Wave : public sf::Drawable, public sf::Transformable {
 
 public:
 
-    Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, sf::Shader &shader);
+    Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, float sun_angle, sf::Shader &shader);
 
     ~Wave() override;
 
@@ -34,7 +34,9 @@ public:
 
     void SetColor(sf::Color new_color);
 
-    void Update();
+    void SetSunAngle(float angle);
+
+    void Update(sf::Time dt, sf::Time elapsed);
 
 private:
 
@@ -43,6 +45,7 @@ private:
     float step_size;
     float segment_width;
     float main_angle {0.0f};
+    float sun_angle {0.0f};
 
     sf::Color flat_color;
     sf::VertexArray wave;
@@ -61,6 +64,7 @@ private:
     void updateColor();
 
     void updatePoints();
+
 };
 
 

@@ -4,19 +4,21 @@
 
 #include "Wave.h"
 
-Wave::Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, sf::Shader &shader):
+Wave::Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, float sun_angle, sf::Shader &shader):
 
 segments_count{segments_count},
 size{size},
 amplitude{amplitude},
 flat_color{flat_color},
 main_angle{init_angle},
+sun_angle{sun_angle},
 shader{shader}
 
 {
     step_size = (float)(M_PI * 2 / segments_count);
     segment_width = size.x / (float)segments_count;
     shader.setUniform("seed", main_angle);
+    shader.setUniform("sun_seed", sun_angle);
 
     Wave::initPoints();
     Wave::initShape();
@@ -103,7 +105,8 @@ void Wave::updateColor() {
     }
 }
 
-void Wave::updateShape() {
+void Wave::updateShape()
+{
     int t = 0;
     float bottom_y = size.y;
 
@@ -121,17 +124,15 @@ void Wave::updateShape() {
     }
 }
 
-void Wave::Update()
+void Wave::Update(sf::Time dt, sf::Time elapsed)
 {
     auto current_wave_pos = getPosition();
-    main_angle += M_PI / 270.0f;
+    main_angle += dt.asSeconds() * 100 * M_PI / 270.0f;
 
     shader.setUniform("seed", main_angle);
     shader.setUniform("waveHeight", size.y);
     shader.setUniform("waveYStart", 480.0f - current_wave_pos.y);
-
-    std::cout << "W height: " << size.y << " W start: " << 480.0f - current_wave_pos.y << std::endl;
-
+    shader.setUniform("sun_seed", sun_angle);
     updatePoints();
     updateShape();
 }
@@ -154,4 +155,8 @@ WaveFn::PosAndRot Wave::GetPointPosAndRotation(sf::Vector2f point) {
 
 float Wave::GetAngle() {
     return main_angle;
+}
+
+void Wave::SetSunAngle(float angle) {
+    sun_angle = angle;
 }
