@@ -33,7 +33,6 @@ vec4 calcFinalColor(vec4 color)
     float dist = sqrt(pow(frag_dist_from_sun.x,2) + pow(frag_dist_from_sun.y,2));
 
     float brightness = max(0.37f, dist / rot_radius);
-    vec4 white = vec4(brightness, brightness, brightness, 1.0f);
 
     if (dist < rot_radius) {
         return color * brightness;

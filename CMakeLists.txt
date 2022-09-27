@@ -3,7 +3,7 @@ project(bombaklad)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++20")
 
-set(SOURCE_FILES main.cpp src/WaveFunctions.h src/Utils.h src/shapes/Wave.cpp src/shapes/Wave.h)
+set(SOURCE_FILES main.cpp src/WaveFunctions.h src/Utils.h src/shapes/Wave.cpp src/shapes/Wave.h src/shapes/TheSun.cpp src/shapes/TheSun.h src/shaders/ShaderLoader.cpp src/shaders/ShaderLoader.h)
 add_executable(bombaklad ${SOURCE_FILES})
 include_directories(/usr/local/include)
 
