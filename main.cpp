@@ -8,9 +8,10 @@ sf::Shader shader;
 sf::Shader shader2;
 sf::Shader shader3;
 sf::Shader sunshader;
+sf::Shader papershader;
 
 sf::RectangleShape bg;
-float sun_angle = 0.0f;
+float sun_angle = M_PI / 2;
 
 sf::Color GRAY {29, 31, 54, 225};
 sf::Color GRAY1 {24, 26, 49, 225};
@@ -29,7 +30,7 @@ struct Player {
     sf::Vector2f pos {SCR_W / 2, (float)SCR_H /2 };
     float angle {0.0f};
     sf::Vector2f accel {0.0f, 0.0f};
-    sf::RectangleShape shape {sf::Vector2f{30.0f,30.0f}};
+    sf::RectangleShape shape {sf::Vector2f{120.0f,120.0f}};
 } player;
 
 void loadShader()
@@ -57,11 +58,17 @@ void loadShader()
             SHADERS_PATH"sunshaper.frag") ) {
         std::cout << "ERROR LOADING SUNSHAPER" << std::endl;
     }
+
+    if ( !papershader.loadFromFile(
+            SHADERS_PATH"waveshaper.vert",
+            SHADERS_PATH"papershader.frag") ) {
+        std::cout << "ERROR LOADING PAPERSHADER" << std::endl;
+    }
 }
 
 void setupPlayer()
 {
-    player.shape.setFillColor(sf::Color{50,60,85, 255});
+    player.shape.setFillColor(sf::Color{50,60,85, 205});
     player.shape.setPosition(player.pos);
     player.shape.setOrigin(player.shape.getLocalBounds().width / 2, player.shape.getLocalBounds().height / 2);
 }
@@ -90,7 +97,8 @@ int main()
      */
 
     loadShader();
-    sunshader.setUniform("seed", sun_angle);
+    sunshader.setUniform("seed", sun_angle );
+    papershader.setUniform( "u_time", 0.0f );
 
     Wave wave1{
         8,
@@ -144,7 +152,9 @@ int main()
     while (window.isOpen())
     {
         sf::Time dt = clock.restart();
-        sf::Time elapsed = clock.getElapsedTime();
+        sf::Time elapsed = clock2.getElapsedTime();
+
+
 
         sf::Event event{};
 
@@ -189,9 +199,12 @@ int main()
         window.draw(wave3, &shader3);
         window.draw(wave2, &shader2);
         window.draw(wave1, &shader);
-        window.draw(player.shape);
 
-        sun_angle -= M_PI / 270.0f;
+        papershader.setUniform("u_time", elapsed.asSeconds());
+
+        window.draw(player.shape, &papershader);
+
+        sun_angle -= M_PI / (270.0f * 20.0f);
         sunshader.setUniform("seed", sun_angle);
 
         window.display();

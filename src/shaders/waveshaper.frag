@@ -7,18 +7,12 @@ uniform float seed;
 uniform float sun_seed;
 uniform float waveHeight;
 uniform float waveYStart;
+uniform float u_time;
 
-float rand(float n)
-{
-    return fract(sin(n) * 43758.5453123);
-}
-
-float noise(float p)
-{
-    float fl = floor(p);
-    float fc = fract(p);
-
-    return mix(rand(fl), rand(fl + 1.0), fc);
+float grand(vec2 pos) {
+    return smoothstep(0.488, 0.489, fract(
+        mod( u_time, 1.0f ) + sin( dot( pos, vec2( 100.0f, 1.0f ) ) ) * 100000.0f
+    ));
 }
 
 float map(float value, float min1, float max1, float min2, float max2)
@@ -34,7 +28,9 @@ float calcDarkness(float y)
 
     float t = map(y_to_wave, 0.0f, 1.0f, -12.0f, 3.0f);
     float lo2 = 1.0f - (1 / (1+ pow(2.718281828459045f, t) ));
+//    float lo3 = smoothstep(0.001f, 1.0f, lo2);
 
+//    return lo3;
     return map(lo2, 0.0f, 1.0f, 0.4f, 1.0f);
 }
 
@@ -66,7 +62,9 @@ vec4 addShine(float y, vec4 src_color)
     float shine_strength = map( 1.0f - max(abs( dist/shine_width ), 0.25f), 0.0f, 1.0f, 0.0f, 0.15f); // 0.09f
     vec4 yello = vec4(1.0f, 1.0f, 1.0f, 1.0f);
 
-    return mix(src_color, yello, shine_strength * vis);
+
+    vec4 shiny_color = mix(src_color, yello, shine_strength * vis);
+    return shiny_color;
 }
 
 vec4 calcFinalColor()
@@ -79,15 +77,15 @@ vec4 calcFinalColor()
 
     vec4 final = addShine(gl_FragCoord.y - 0.5f, darkened_color);
 
+    vec2 res = vec2(640.0f, 480.0f);
+    vec2 pos = gl_FragCoord.xy / res;
+    float r_color = grand( pos );
+    vec4 col = vec4(vec3(r_color), 1.0);
+
+    return mix(final, col, 0.015);
     return final;
 }
 
-vec4 randomColor()
-{
-    float hash = noise(seed);
-    hash = gl_FragCoord.x - seed;
-    return vec4( hash, hash, hash, 1.0f);
-}
 
 void main()
 {

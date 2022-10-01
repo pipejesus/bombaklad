@@ -133,6 +133,7 @@ void Wave::Update(sf::Time dt, sf::Time elapsed)
     shader.setUniform("waveHeight", size.y);
     shader.setUniform("waveYStart", 480.0f - current_wave_pos.y);
     shader.setUniform("sun_seed", sun_angle);
+    shader.setUniform("u_time", elapsed.asSeconds());
     updatePoints();
     updateShape();
 }
