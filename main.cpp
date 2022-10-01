@@ -1,8 +1,8 @@
 #include <SFML/Graphics.hpp>
 #include "src/shapes/Wave.h"
 
-#define SCR_W 640
-#define SCR_H 480
+#define SCR_W 800
+#define SCR_H 600
 
 sf::Shader shader;
 sf::Shader shader2;
@@ -12,6 +12,8 @@ sf::Shader papershader;
 
 sf::RectangleShape bg;
 float sun_angle = M_PI / 2;
+
+sf::Vector2f scr_res = {SCR_W, SCR_H};
 
 sf::Color GRAY {29, 31, 54, 225};
 sf::Color GRAY1 {24, 26, 49, 225};
@@ -30,7 +32,7 @@ struct Player {
     sf::Vector2f pos {SCR_W / 2, (float)SCR_H /2 };
     float angle {0.0f};
     sf::Vector2f accel {0.0f, 0.0f};
-    sf::RectangleShape shape {sf::Vector2f{120.0f,120.0f}};
+    sf::RectangleShape shape {sf::Vector2f{30.0f,30.0f}};
 } player;
 
 void loadShader()
@@ -102,39 +104,42 @@ int main()
 
     Wave wave1{
         8,
-        sf::Vector2f{640.0f, 140.0f},
+        sf::Vector2f{scr_res.x, 140.0f},
         35.0f,
         pal_sea1["sea500"],
         0.0f,
         sun_angle,
-        shader
+        shader,
+        scr_res
     };
 
-    wave1.setPosition(0.0f, 480.0f - 140.0f);
+    wave1.setPosition(0.0f, scr_res.y - 140.0f);
 
     Wave wave2{
             8,
-            sf::Vector2f{640.0f, 280.0f},
+            sf::Vector2f{scr_res.x, 280.0f},
             65.0f,
             pal_sea1["sea500"],
             -1 * M_PI / 3,
             sun_angle,
-            shader2
+            shader2,
+            scr_res
     };
 
-    wave2.setPosition(0.0f, 480.0f - 280.0f);
+    wave2.setPosition(0.0f, scr_res.y - 280.0f);
 
     Wave wave3{
             8,
-            sf::Vector2f{640.0f, 330.0f},
+            sf::Vector2f{scr_res.x, 330.0f},
             20.0f,
             pal_sea1["sea500"],
             -1 * M_PI / 4,
             sun_angle,
-            shader3
+            shader3,
+            scr_res
     };
 
-    wave3.setPosition(0.0f, 480.0f - 330.0f);
+    wave3.setPosition(0.0f, scr_res.y - 330.0f);
 
     wave1.SetSunAngle(sun_angle);
     wave2.SetSunAngle(sun_angle);
@@ -204,8 +209,9 @@ int main()
 
         window.draw(player.shape, &papershader);
 
-        sun_angle -= M_PI / (270.0f * 20.0f);
+        sun_angle -= (M_PI / 180.0f) * 20.0f * dt.asSeconds();
         sunshader.setUniform("seed", sun_angle);
+        sunshader.setUniform("res", scr_res);
 
         window.display();
     }

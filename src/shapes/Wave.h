@@ -20,7 +20,7 @@ class Wave : public sf::Drawable, public sf::Transformable {
 
 public:
 
-    Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, float sun_angle, sf::Shader &shader);
+    Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, float sun_angle, sf::Shader &shader, sf::Vector2f resolution);
 
     ~Wave() override;
 
@@ -52,6 +52,7 @@ private:
     std::vector<sf::Vector2f> points;
     sf::Vector2f size;
     sf::Shader &shader;
+    sf::Vector2f resolution;
 
     virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 

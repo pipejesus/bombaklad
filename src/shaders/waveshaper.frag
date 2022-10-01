@@ -1,5 +1,4 @@
 #version 120
-#define MM_PI 3.1415926535897932384626433832795
 
 varying vec2 fragTexCoord;
 varying vec4 fragColor;
@@ -8,6 +7,7 @@ uniform float sun_seed;
 uniform float waveHeight;
 uniform float waveYStart;
 uniform float u_time;
+uniform vec2 res;
 
 float grand(vec2 pos) {
     return smoothstep(0.488, 0.489, fract(
@@ -22,34 +22,31 @@ float map(float value, float min1, float max1, float min2, float max2)
 
 float calcDarkness(float y)
 {
-    float wave_ratio = waveHeight / 480.0f;
-    float y_ratio = y / 480.0f;
+    float wave_ratio = waveHeight / res.y;
+    float y_ratio = y / res.y;
     float y_to_wave = y_ratio / wave_ratio;
 
     float t = map(y_to_wave, 0.0f, 1.0f, -12.0f, 3.0f);
     float lo2 = 1.0f - (1 / (1+ pow(2.718281828459045f, t) ));
-//    float lo3 = smoothstep(0.001f, 1.0f, lo2);
 
-//    return lo3;
     return map(lo2, 0.0f, 1.0f, 0.4f, 1.0f);
 }
 
 vec4 addShine(float y, vec4 src_color)
 {
     float rot_radius = 150.0f;
-    float M_PI = 3.1415926535897932384626433832795;
 
     vec4 sun_pos = vec4(
-        cos(sun_seed) * rot_radius + 320.0f, // + sin(seed * 1.5f) * 10.0f
-        sin(sun_seed) * rot_radius + 240.0f,
+        cos(sun_seed) * rot_radius + (res.x / 2.0f), // + sin(seed * 1.5f) * 10.0f
+        sin(sun_seed) * rot_radius + (res.y / 2.0f),
         1.0f,
         1.0f
     );
 
     float vis = max(0.0f, sin(sun_seed));
 
-    float wave_ratio = waveHeight / 480.0f;
-    float y_ratio = y / 480.0f;
+    float wave_ratio = waveHeight / res.y;
+    float y_ratio = y / res.y;
     float y_to_wave = y_ratio / wave_ratio;
 
     float dist = abs(gl_FragCoord.x - sun_pos.x);
@@ -77,13 +74,11 @@ vec4 calcFinalColor()
 
     vec4 final = addShine(gl_FragCoord.y - 0.5f, darkened_color);
 
-    vec2 res = vec2(640.0f, 480.0f);
     vec2 pos = gl_FragCoord.xy / res;
     float r_color = grand( pos );
     vec4 col = vec4(vec3(r_color), 1.0);
 
-    return mix(final, col, 0.015);
-    return final;
+    return mix(final, col, 0.019);
 }
 
 

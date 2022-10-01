@@ -4,7 +4,7 @@
 
 #include "Wave.h"
 
-Wave::Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, float sun_angle, sf::Shader &shader):
+Wave::Wave(int segments_count, sf::Vector2f size, float amplitude, sf::Color flat_color, float init_angle, float sun_angle, sf::Shader &shader, sf::Vector2f resolution):
 
 segments_count{segments_count},
 size{size},
@@ -12,14 +12,15 @@ amplitude{amplitude},
 flat_color{flat_color},
 main_angle{init_angle},
 sun_angle{sun_angle},
-shader{shader}
+shader{shader},
+resolution{resolution}
 
 {
     step_size = (float)(M_PI * 2 / segments_count);
     segment_width = size.x / (float)segments_count;
     shader.setUniform("seed", main_angle);
     shader.setUniform("sun_seed", sun_angle);
-
+    shader.setUniform("res", resolution);
     Wave::initPoints();
     Wave::initShape();
     Wave::updateShape();
@@ -134,6 +135,7 @@ void Wave::Update(sf::Time dt, sf::Time elapsed)
     shader.setUniform("waveYStart", 480.0f - current_wave_pos.y);
     shader.setUniform("sun_seed", sun_angle);
     shader.setUniform("u_time", elapsed.asSeconds());
+    shader.setUniform("res", resolution);
     updatePoints();
     updateShape();
 }

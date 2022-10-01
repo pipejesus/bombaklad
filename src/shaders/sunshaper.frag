@@ -3,15 +3,7 @@
 varying vec2 fragTexCoord;
 varying vec4 fragColor;
 uniform float seed;
-
-float rand(float n){return fract(sin(n) * 43758.5453123);}
-
-float noise(float p){
-    float fl = floor(p);
-    float fc = fract(p);
-
-    return mix(rand(fl), rand(fl + 1.0), fc);
-}
+uniform vec2 res;
 
 float map(float value, float min1, float max1, float min2, float max2)
 {
@@ -23,8 +15,8 @@ vec4 calcFinalColor(vec4 color)
     float rot_radius = 150.0f;
 
     vec4 sun_pos = vec4(
-      cos(seed) * rot_radius + 320.0f,
-      sin(seed) * rot_radius + 240.0f,
+      cos(seed) * rot_radius + res.x / 2.0f,
+      sin(seed) * rot_radius + res.y / 2.0f,
       1.0f,
       1.0f
     );
